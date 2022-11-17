@@ -7,16 +7,13 @@
 
 import UIKit
 
-
-var imageView = UIImageView()
 class RickController: UIViewController {
-    var networkService = NetworkService()
-    var imageView = UIImageView()
     private let table = UITableView()
-    let networkDataFetcher = NetworkDataFetcher()
-    var ricks: [ResponseResult] = []
     private var installCell: InstallCell? = nil
-    var counter:Int = 1
+    private let networkDataFetcher = NetworkDataFetcher()
+    private var networkService = NetworkService()
+    var ricks: [ResponseResult] = []
+    private var counter:Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
