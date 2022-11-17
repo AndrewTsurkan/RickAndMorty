@@ -52,6 +52,7 @@ class InstallCell: UITableViewCell {
     }
    
     static var reusedId = "InstallCell"
+    let imageCeche = NSCache<NSString,UIImage>()
     var imageViewVector = UIImageView()
     let labelName = UILabel()
     let labelGenderRace = UILabel()
@@ -184,17 +185,21 @@ class InstallCell: UITableViewCell {
             return
         }
             let urlImage = URL(string:url)
+        if let imageCeche = imageCeche.object(forKey: urlImage!.absoluteString as NSString) {
+            self.posterImageView.image = imageCeche
+        } else {
             NetworkService().request(urlString: urlImage!.absoluteString) { [weak self] result in
-            switch result {
-            case let .success(data):
-                let image = UIImage(data: data)
-                DispatchQueue.main.async {
-                    self?.posterImageView.image = image
-                }
-            case let .failure(error):
-                print(error)
-                DispatchQueue.main.async {
-                    self?.posterImageView.image = UIImage(named:"play.slash")
+                switch result {
+                case let .success(data):
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        self?.posterImageView.image = image
+                    }
+                case let .failure(error):
+                    print(error)
+                    DispatchQueue.main.async {
+                        self?.posterImageView.image = UIImage(named:"play.slash")
+                    }
                 }
             }
         }
