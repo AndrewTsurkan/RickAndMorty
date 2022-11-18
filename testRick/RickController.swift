@@ -9,29 +9,28 @@ import UIKit
 
 class RickController: UIViewController {
     private let table = UITableView()
-    private var installCell: InstallCell? = nil
     private let networkDataFetcher = NetworkDataFetcher()
     private var networkService = NetworkService()
-    var ricks: [ResponseResult] = []
-    private var counter:Int = 1
+    private var ricks: [ResponseResult] = []
+    private var counter: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "Characters"
         navigationController?.navigationBar.prefersLargeTitles = true
-        self.table.separatorColor = .white
+        table.separatorColor = .white
         
-        installTableView()
+        settapTableView()
         loadData()
     }
     
-    func installTableView() {
+    func settapTableView() {
         view.addSubview(table)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.dataSource = self
         table.delegate = self
-        table.register(InstallCell.self, forCellReuseIdentifier: InstallCell.reusedId)
+        table.register(RickInfoCell.self, forCellReuseIdentifier: RickInfoCell.reusedId)
         
         [table.topAnchor.constraint(equalTo: view.topAnchor),
          table.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -51,12 +50,13 @@ class RickController: UIViewController {
 }
 
 extension RickController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return ricks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: InstallCell.reusedId, for: indexPath) as? InstallCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RickInfoCell.reusedId, for: indexPath) as? RickInfoCell else {
             return UITableViewCell()
         }
         let rick = ricks[indexPath.row]
