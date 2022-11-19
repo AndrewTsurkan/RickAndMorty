@@ -7,6 +7,7 @@
 
 import Foundation
 struct Response: Codable {
+    
     var results: [ResponseResult]?
 }
 

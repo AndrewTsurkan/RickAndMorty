@@ -9,7 +9,7 @@ class RickInfoCell: UITableViewCell {
     
     static var reusedId = "InstallCell"
     private var networkDataFetcher = NetworkDataFetcher()
-
+    
     private var imageViewVector = UIImageView()
     private let labelName = UILabel()
     private let labelGenderAndRace = UILabel()
@@ -21,13 +21,13 @@ class RickInfoCell: UITableViewCell {
     private let stackViewInfoAllInfoHero = UIStackView()
     private let stackViewImageViewVectorAndLabelPlanets = UIStackView()
     private let viewLabelNameAndViewStatus = UIView()
-
+    
     var responseResult: ResponseResult?{
         didSet{
             reloadData()
         }
     }
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupPosterImageView()
@@ -36,9 +36,9 @@ class RickInfoCell: UITableViewCell {
         setupLabelStatusAndViewStatus()
         setupLabelGenderAndRace()
         setupButton()
+        setupStackViewAllInfoHero()
         setupImageViewVector()
         setupLabelPlanets()
-        setupStackViewInfoAllInfoHero()
         setupStackViewImageViewVectorAndLabelPlanets()
     }
     
@@ -46,7 +46,7 @@ class RickInfoCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupStackViewInfoAllInfoHero() {
+    func setupStackViewAllInfoHero() {
         addSubview(stackViewInfoAllInfoHero)
         stackViewInfoAllInfoHero.translatesAutoresizingMaskIntoConstraints = false
         
@@ -57,15 +57,33 @@ class RickInfoCell: UITableViewCell {
         [stackViewInfoAllInfoHero.topAnchor.constraint(equalTo: topAnchor, constant: 20),
          stackViewInfoAllInfoHero.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 10),
          stackViewInfoAllInfoHero.rightAnchor.constraint(equalTo: rightAnchor, constant: -24),
-         stackViewInfoAllInfoHero.heightAnchor.constraint(equalToConstant: 120)].forEach {$0.isActive = true }
+         stackViewInfoAllInfoHero.heightAnchor.constraint(equalToConstant: 120)].forEach { $0.isActive = true }
     }
-
+    
+    func setupStackViewImageViewVectorAndLabelPlanets() {
+        stackViewInfoAllInfoHero.addArrangedSubview(stackViewImageViewVectorAndLabelPlanets)
+        stackViewInfoAllInfoHero.translatesAutoresizingMaskIntoConstraints = false
+        stackViewImageViewVectorAndLabelPlanets.axis = .horizontal
+        stackViewImageViewVectorAndLabelPlanets.alignment = .fill
+        stackViewImageViewVectorAndLabelPlanets.spacing = 8
+    }
+    
+    func setupPosterImageView() {
+        addSubview(posterImageView)
+        posterImageView.layer.cornerRadius = 40
+        posterImageView.translatesAutoresizingMaskIntoConstraints = false
+        posterImageView.backgroundColor = .black
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
+        
+        [posterImageView.topAnchor.constraint(equalTo: topAnchor,constant: 20),
+         posterImageView.leftAnchor.constraint(equalTo: leftAnchor,constant: 10),
+         posterImageView.heightAnchor.constraint(equalToConstant: 120),
+         posterImageView.widthAnchor.constraint(equalToConstant: 120)].forEach{ $0.isActive = true }
+    }
+    
     func setupViewLabelNameAndViewStatus() {
         stackViewInfoAllInfoHero.addArrangedSubview(viewLabelNameAndViewStatus)
-        viewLabelNameAndViewStatus.translatesAutoresizingMaskIntoConstraints = false
-        
-        [viewLabelNameAndViewStatus.leftAnchor.constraint(equalTo: stackViewInfoAllInfoHero.leftAnchor),
-         viewLabelNameAndViewStatus.rightAnchor.constraint(equalTo: stackViewInfoAllInfoHero.rightAnchor, constant: -24)].forEach { $0.isActive = true }
     }
     
     func setupLabelName() {
@@ -83,7 +101,7 @@ class RickInfoCell: UITableViewCell {
         viewStatus.addSubview(labelStatus)
         labelStatus.translatesAutoresizingMaskIntoConstraints = false
         labelStatus.font = UIFont.systemFont(ofSize: 14)
-
+        
         [viewStatus.heightAnchor.constraint(equalToConstant: 25),
          viewStatus.rightAnchor.constraint(equalTo: viewLabelNameAndViewStatus.rightAnchor)].forEach { $0.isActive = true }
         
@@ -92,13 +110,37 @@ class RickInfoCell: UITableViewCell {
          labelStatus.rightAnchor.constraint(equalTo: viewStatus.rightAnchor, constant: -10),
          labelStatus.bottomAnchor.constraint(equalTo: viewStatus.bottomAnchor, constant: -3)].forEach { $0.isActive = true }
     }
-
-    func setupStackViewImageViewVectorAndLabelPlanets() {
-        stackViewInfoAllInfoHero.addArrangedSubview(stackViewImageViewVectorAndLabelPlanets)
-        stackViewInfoAllInfoHero.translatesAutoresizingMaskIntoConstraints = false
-        stackViewImageViewVectorAndLabelPlanets.axis = .horizontal
-        stackViewImageViewVectorAndLabelPlanets.alignment = .fill
-        stackViewImageViewVectorAndLabelPlanets.spacing = 8
+    
+    func setupLabelGenderAndRace() {
+        stackViewInfoAllInfoHero.addArrangedSubview(labelGenderAndRace)
+        labelGenderAndRace.font = UIFont.systemFont(ofSize: 14)
+    }
+    
+    func setupButton() {
+        stackViewInfoAllInfoHero.addArrangedSubview(buttonWatchEpisodes)
+        buttonWatchEpisodes.translatesAutoresizingMaskIntoConstraints = false
+        buttonWatchEpisodes.layer.cornerRadius = 17
+        buttonWatchEpisodes.backgroundColor = UIColor(red: 255.0/255.0, green: 107.0/255.0, blue: 0.0, alpha: 0.1)
+        buttonWatchEpisodes.setTitleColor(UIColor(red: 255, green: 107, blue: 0), for: .normal)
+        buttonWatchEpisodes.setTitle("▶ Watch episodes", for: .normal)
+        buttonWatchEpisodes.titleLabel!.font = UIFont.systemFont(ofSize: 14)
+        
+        [buttonWatchEpisodes.heightAnchor.constraint(equalToConstant: 35),
+         buttonWatchEpisodes.widthAnchor.constraint(equalToConstant: 148)].forEach { $0.isActive = true }
+    }
+    
+    func setupImageViewVector() {
+        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(imageViewVector)
+        imageViewVector.translatesAutoresizingMaskIntoConstraints = false
+        imageViewVector.image = UIImage(named: "Vector")
+        
+        [imageViewVector.widthAnchor.constraint(equalToConstant: 10),
+         imageViewVector.heightAnchor.constraint(equalToConstant: 12)].forEach{ $0.isActive = true }
+    }
+    
+    func setupLabelPlanets() {
+        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(labelPlanets)
+        labelPlanets.font = UIFont.systemFont(ofSize: 14)
     }
     
     func reloadData() {
@@ -117,67 +159,15 @@ class RickInfoCell: UITableViewCell {
         viewStatus.backgroundColor = status?.backgroundColor
     }
     
-    func setupImageViewVector() {
-        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(imageViewVector)
-        imageViewVector.translatesAutoresizingMaskIntoConstraints = false
-        imageViewVector.image = UIImage(named: "Vector")
-        
-        [imageViewVector.widthAnchor.constraint(equalToConstant: 10),
-         imageViewVector.heightAnchor.constraint(equalToConstant: 12)].forEach{ $0.isActive = true }
-    }
-    
-    func setupPosterImageView() {
-        addSubview(posterImageView)
-        posterImageView.layer.cornerRadius = 40
-        posterImageView.translatesAutoresizingMaskIntoConstraints = false
-        posterImageView.backgroundColor = .black
-        posterImageView.contentMode = .scaleAspectFill
-        posterImageView.clipsToBounds = true
-        
-        [posterImageView.topAnchor.constraint(equalTo: topAnchor,constant: 20),
-         posterImageView.leftAnchor.constraint(equalTo: leftAnchor,constant: 10),
-         posterImageView.heightAnchor.constraint(equalToConstant: 120),
-         posterImageView.widthAnchor.constraint(equalToConstant: 120)].forEach{ $0.isActive = true }
-    }
-    
-    func setupLabelGenderAndRace() {
-        stackViewInfoAllInfoHero.addArrangedSubview(labelGenderAndRace)
-        labelGenderAndRace.translatesAutoresizingMaskIntoConstraints = false
-        labelGenderAndRace.font = UIFont.systemFont(ofSize: 14)
-    }
-    
-    func setupButton() {
-        stackViewInfoAllInfoHero.addArrangedSubview(buttonWatchEpisodes)
-        buttonWatchEpisodes.translatesAutoresizingMaskIntoConstraints = false
-        buttonWatchEpisodes.layer.cornerRadius = 17
-        buttonWatchEpisodes.backgroundColor = UIColor(red: 255.0/255.0, green: 107.0/255.0, blue: 0.0, alpha: 0.1)
-        buttonWatchEpisodes.setTitleColor(UIColor(red: 255, green: 107, blue: 0), for: .normal)
-        buttonWatchEpisodes.setTitle("▶ Watch episodes", for: .normal)
-        buttonWatchEpisodes.titleLabel!.font = UIFont.systemFont(ofSize: 14)
-        
-        [buttonWatchEpisodes.heightAnchor.constraint(equalToConstant: 35),
-         buttonWatchEpisodes.widthAnchor.constraint(equalToConstant: 148)].forEach { $0.isActive = true }
-    }
-    
-    func setupLabelPlanets() {
-        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(labelPlanets)
-        labelPlanets.translatesAutoresizingMaskIntoConstraints = false
-        labelPlanets.font = UIFont.systemFont(ofSize: 14)
-        
-        labelPlanets.heightAnchor.constraint(equalToConstant: 17).isActive = true
-    }
-    
-    
-    
     func downloadPoster() {
         guard let url = responseResult?.image else {
             return
         }
         
         let urlImage = URL(string:url)
-
+        
         if let cachedImage = PostersCache.shared.getImage(url: url) {
-                    posterImageView.image = cachedImage
+            posterImageView.image = cachedImage
         } else {
             NetworkService().request(urlString: urlImage!.absoluteString) { [weak self] result in
                 switch result {
@@ -206,12 +196,12 @@ extension RickInfoCell {
         var text: String {
             switch self{
             case .alive:
-              return "ALIVE"
+                return "ALIVE"
             case .dead:
                 return "DEAD"
             case .unknow:
                 return "UNKNOWN"
-           }
+            }
         }
         
         var backgroundColor: UIColor{
@@ -236,6 +226,6 @@ extension RickInfoCell {
             }
         }
     }
-
+    
     
 }

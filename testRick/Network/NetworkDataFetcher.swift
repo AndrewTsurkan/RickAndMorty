@@ -7,9 +7,8 @@
 
 import Foundation
 
-
 class NetworkDataFetcher {
-   private let networkService = NetworkService()
+    private let networkService = NetworkService()
     
     func fetchJson(urlString: String, closure: @escaping ([ResponseResult]?) ->Void) {
         networkService.request(urlString: urlString) { result in
