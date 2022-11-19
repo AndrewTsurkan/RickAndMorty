@@ -3,58 +3,112 @@
 //  testRick
 //
 //  Created by Андрей Цуркан on 16.11.2022.
-//
-
 import UIKit
 
 class RickInfoCell: UITableViewCell {
+    
+    static var reusedId = "InstallCell"
+    private var networkDataFetcher = NetworkDataFetcher()
+
+    private var imageViewVector = UIImageView()
+    private let labelName = UILabel()
+    private let labelGenderAndRace = UILabel()
+    private let labelStatus = UILabel()
+    private let buttonWatchEpisodes = UIButton()
+    private let labelPlanets = UILabel()
+    private let viewStatus = UIView()
+    private let posterImageView = UIImageView()
+    private let stackViewInfoAllInfoHero = UIStackView()
+    private let stackViewImageViewVectorAndLabelPlanets = UIStackView()
+    private let viewLabelNameAndViewStatus = UIView()
+
     var responseResult: ResponseResult?{
         didSet{
-            downloadPoster()
             reloadData()
         }
     }
-    static var reusedId = "InstallCell"
-    private let imageCeche = NSCache<NSString,UIImage>()
-    private var imageViewVector = UIImageView()
-    private let labelName = UILabel()
-    private let labelGenderRace = UILabel()
-    private let labelStatus = UILabel()
-    private let buttonWatch = UIButton()
-    private let labelPlanets = UILabel()
-    private let viewStatus = UIView()
-    private var networkDataFetcher = NetworkDataFetcher()
-    private let posterImageView: UIImageView = {
-           let imageView = UIImageView()
-           imageView.translatesAutoresizingMaskIntoConstraints = false
-           imageView.backgroundColor = .black
-           imageView.contentMode = .scaleAspectFill
-           imageView.clipsToBounds = true
-           return imageView
-       }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        settapImageView()
-        settapLabelName()
-        settapSubData()
-        settapButton()
-        settapLabelPlanets()
-        settapLabelStatus()
-        settapImageViewVector()
+        setupPosterImageView()
+        setupViewLabelNameAndViewStatus()
+        setupLabelName()
+        setupLabelStatusAndViewStatus()
+        setupLabelGenderAndRace()
+        setupButton()
+        setupImageViewVector()
+        setupLabelPlanets()
+        setupStackViewInfoAllInfoHero()
+        setupStackViewImageViewVectorAndLabelPlanets()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupStackViewInfoAllInfoHero() {
+        addSubview(stackViewInfoAllInfoHero)
+        stackViewInfoAllInfoHero.translatesAutoresizingMaskIntoConstraints = false
+        
+        stackViewInfoAllInfoHero.axis = .vertical
+        stackViewInfoAllInfoHero.alignment = .leading
+        stackViewInfoAllInfoHero.spacing = 10
+        
+        [stackViewInfoAllInfoHero.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+         stackViewInfoAllInfoHero.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 10),
+         stackViewInfoAllInfoHero.rightAnchor.constraint(equalTo: rightAnchor, constant: -24),
+         stackViewInfoAllInfoHero.heightAnchor.constraint(equalToConstant: 120)].forEach {$0.isActive = true }
+    }
+
+    func setupViewLabelNameAndViewStatus() {
+        stackViewInfoAllInfoHero.addArrangedSubview(viewLabelNameAndViewStatus)
+        viewLabelNameAndViewStatus.translatesAutoresizingMaskIntoConstraints = false
+        
+        [viewLabelNameAndViewStatus.leftAnchor.constraint(equalTo: stackViewInfoAllInfoHero.leftAnchor),
+         viewLabelNameAndViewStatus.rightAnchor.constraint(equalTo: stackViewInfoAllInfoHero.rightAnchor, constant: -24)].forEach { $0.isActive = true }
+    }
+    
+    func setupLabelName() {
+        viewLabelNameAndViewStatus.addSubview(labelName)
+        labelName.font = UIFont.systemFont(ofSize: 21)
+        labelName.translatesAutoresizingMaskIntoConstraints = false
+        labelName.widthAnchor.constraint(equalToConstant: 160).isActive = true
+    }
+    
+    func setupLabelStatusAndViewStatus() {
+        viewLabelNameAndViewStatus.addSubview(viewStatus)
+        viewStatus.translatesAutoresizingMaskIntoConstraints = false
+        viewStatus.layer.cornerRadius = 12.5
+        
+        viewStatus.addSubview(labelStatus)
+        labelStatus.translatesAutoresizingMaskIntoConstraints = false
+        labelStatus.font = UIFont.systemFont(ofSize: 14)
+
+        [viewStatus.heightAnchor.constraint(equalToConstant: 25),
+         viewStatus.rightAnchor.constraint(equalTo: viewLabelNameAndViewStatus.rightAnchor)].forEach { $0.isActive = true }
+        
+        [labelStatus.topAnchor.constraint(equalTo: viewStatus.topAnchor, constant: 3),
+         labelStatus.leftAnchor.constraint(equalTo: viewStatus.leftAnchor, constant: 10),
+         labelStatus.rightAnchor.constraint(equalTo: viewStatus.rightAnchor, constant: -10),
+         labelStatus.bottomAnchor.constraint(equalTo: viewStatus.bottomAnchor, constant: -3)].forEach { $0.isActive = true }
+    }
+
+    func setupStackViewImageViewVectorAndLabelPlanets() {
+        stackViewInfoAllInfoHero.addArrangedSubview(stackViewImageViewVectorAndLabelPlanets)
+        stackViewInfoAllInfoHero.translatesAutoresizingMaskIntoConstraints = false
+        stackViewImageViewVectorAndLabelPlanets.axis = .horizontal
+        stackViewImageViewVectorAndLabelPlanets.alignment = .fill
+        stackViewImageViewVectorAndLabelPlanets.spacing = 8
+    }
+    
     func reloadData() {
         guard let responseResult = responseResult else {
             return
         }
+        downloadPoster()
         labelName.text = responseResult.name
         labelStatus.text = responseResult.status
-        labelGenderRace.text = "\(responseResult.species ?? ""), \(responseResult.gender?.lowercased() ?? "")"
+        labelGenderAndRace.text = "\(responseResult.species ?? ""), \(responseResult.gender?.lowercased() ?? "")"
         labelPlanets.text = responseResult.origin?.name
         
         let status = Status(rawValue: responseResult.status ?? "")
@@ -63,98 +117,67 @@ class RickInfoCell: UITableViewCell {
         viewStatus.backgroundColor = status?.backgroundColor
     }
     
-    func settapImageViewVector() {
-        addSubview(imageViewVector)
+    func setupImageViewVector() {
+        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(imageViewVector)
         imageViewVector.translatesAutoresizingMaskIntoConstraints = false
         imageViewVector.image = UIImage(named: "Vector")
         
-        [imageViewVector.topAnchor.constraint(equalTo: buttonWatch.bottomAnchor, constant: 10),
-         imageViewVector.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 8),
-         imageViewVector.widthAnchor.constraint(equalToConstant: 10)].forEach{$0.isActive = true}
+        [imageViewVector.widthAnchor.constraint(equalToConstant: 10),
+         imageViewVector.heightAnchor.constraint(equalToConstant: 12)].forEach{ $0.isActive = true }
     }
     
-    func settapImageView() {
+    func setupPosterImageView() {
         addSubview(posterImageView)
         posterImageView.layer.cornerRadius = 40
+        posterImageView.translatesAutoresizingMaskIntoConstraints = false
+        posterImageView.backgroundColor = .black
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
         
         [posterImageView.topAnchor.constraint(equalTo: topAnchor,constant: 20),
          posterImageView.leftAnchor.constraint(equalTo: leftAnchor,constant: 10),
          posterImageView.heightAnchor.constraint(equalToConstant: 120),
-         posterImageView.widthAnchor.constraint(equalToConstant: 120)].forEach{$0.isActive = true}
+         posterImageView.widthAnchor.constraint(equalToConstant: 120)].forEach{ $0.isActive = true }
     }
     
-    func settapLabelName() {
-        addSubview(labelName)
-        labelName.font = UIFont.systemFont(ofSize: 21)
-        labelName.translatesAutoresizingMaskIntoConstraints = false
+    func setupLabelGenderAndRace() {
+        stackViewInfoAllInfoHero.addArrangedSubview(labelGenderAndRace)
+        labelGenderAndRace.translatesAutoresizingMaskIntoConstraints = false
+        labelGenderAndRace.font = UIFont.systemFont(ofSize: 14)
+    }
+    
+    func setupButton() {
+        stackViewInfoAllInfoHero.addArrangedSubview(buttonWatchEpisodes)
+        buttonWatchEpisodes.translatesAutoresizingMaskIntoConstraints = false
+        buttonWatchEpisodes.layer.cornerRadius = 17
+        buttonWatchEpisodes.backgroundColor = UIColor(red: 255.0/255.0, green: 107.0/255.0, blue: 0.0, alpha: 0.1)
+        buttonWatchEpisodes.setTitleColor(UIColor(red: 255, green: 107, blue: 0), for: .normal)
+        buttonWatchEpisodes.setTitle("▶ Watch episodes", for: .normal)
+        buttonWatchEpisodes.titleLabel!.font = UIFont.systemFont(ofSize: 14)
         
-        [labelName.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-         labelName.leftAnchor.constraint(equalTo:posterImageView.rightAnchor,constant: 8),
-         labelName.widthAnchor.constraint(equalToConstant: 180),
-         labelName.heightAnchor.constraint(equalToConstant: 25)].forEach{$0.isActive = true}
+        [buttonWatchEpisodes.heightAnchor.constraint(equalToConstant: 35),
+         buttonWatchEpisodes.widthAnchor.constraint(equalToConstant: 148)].forEach { $0.isActive = true }
     }
     
-    func settapSubData() {
-        addSubview(labelGenderRace)
-        labelGenderRace.translatesAutoresizingMaskIntoConstraints = false
-        labelGenderRace.font = UIFont.systemFont(ofSize: 14)
-        
-        [labelGenderRace.topAnchor.constraint(equalTo: labelName.bottomAnchor,constant: 5),
-         labelGenderRace.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 8),
-         labelGenderRace.heightAnchor.constraint(equalToConstant: 17)].forEach{$0.isActive = true}
-    }
-    
-    func settapButton() {
-        addSubview(buttonWatch)
-        buttonWatch.translatesAutoresizingMaskIntoConstraints = false
-        buttonWatch.layer.cornerRadius = 17
-        buttonWatch.backgroundColor = UIColor(red: 255.0/255.0, green: 107.0/255.0, blue: 0.0, alpha: 0.1)
-        buttonWatch.setTitleColor(UIColor(red: 255, green: 107, blue: 0), for: .normal)
-        buttonWatch.setTitle("▶ Watch episodes", for: .normal)
-        buttonWatch.titleLabel!.font = UIFont.systemFont(ofSize: 14)
-        
-        [buttonWatch.topAnchor.constraint(equalTo: labelGenderRace.bottomAnchor,constant: 8),
-         buttonWatch.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 8),
-         buttonWatch.heightAnchor.constraint(equalToConstant: 35),
-         buttonWatch.widthAnchor.constraint(equalToConstant: 148)].forEach{$0.isActive = true}
-    }
-    
-    func settapLabelPlanets() {
-        addSubview(labelPlanets)
+    func setupLabelPlanets() {
+        stackViewImageViewVectorAndLabelPlanets.addArrangedSubview(labelPlanets)
         labelPlanets.translatesAutoresizingMaskIntoConstraints = false
         labelPlanets.font = UIFont.systemFont(ofSize: 14)
         
-        [labelPlanets.topAnchor.constraint(equalTo: buttonWatch.bottomAnchor,constant: 8),
-         labelPlanets.leftAnchor.constraint(equalTo: posterImageView.rightAnchor, constant: 25),
-         labelPlanets.heightAnchor.constraint(equalToConstant: 17)].forEach{$0.isActive = true}
+        labelPlanets.heightAnchor.constraint(equalToConstant: 17).isActive = true
     }
     
-    func settapLabelStatus() {
-        addSubview(viewStatus)
-        viewStatus.translatesAutoresizingMaskIntoConstraints = false
-        viewStatus.layer.cornerRadius = 10
-        
-        viewStatus.addSubview(labelStatus)
-        labelStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelStatus.font = UIFont.systemFont(ofSize: 14)
-        
-        [viewStatus.topAnchor.constraint(equalTo: topAnchor,constant: 20),
-         viewStatus.rightAnchor.constraint(equalTo: rightAnchor, constant: -24),
-         viewStatus.heightAnchor.constraint(equalToConstant: 25)].forEach{$0.isActive = true}
-        
-        [labelStatus.topAnchor.constraint(equalTo: viewStatus.topAnchor, constant: 3),
-         labelStatus.leftAnchor.constraint(equalTo: viewStatus.leftAnchor, constant: 10),
-         labelStatus.rightAnchor.constraint(equalTo: viewStatus.rightAnchor, constant: -10),
-         labelStatus.bottomAnchor.constraint(equalTo: viewStatus.bottomAnchor, constant: -3)].forEach{$0.isActive = true}
-    }
+    
     
     func downloadPoster() {
         guard let url = responseResult?.image else {
             return
         }
+        
         let urlImage = URL(string:url)
-        if let imageCeche = imageCeche.object(forKey: urlImage!.absoluteString as NSString) {
-            self.posterImageView.image = imageCeche
+
+        if let cachedImage = PostersCache.shared.getImage(url: url) {
+                    posterImageView.image = cachedImage
         } else {
             NetworkService().request(urlString: urlImage!.absoluteString) { [weak self] result in
                 switch result {
@@ -171,4 +194,48 @@ class RickInfoCell: UITableViewCell {
             }
         }
     }
+}
+
+extension RickInfoCell {
+    
+    enum Status: String {
+        case alive = "Alive"
+        case dead = "Dead"
+        case unknow = "unknown"
+        
+        var text: String {
+            switch self{
+            case .alive:
+              return "ALIVE"
+            case .dead:
+                return "DEAD"
+            case .unknow:
+                return "UNKNOWN"
+           }
+        }
+        
+        var backgroundColor: UIColor{
+            switch self{
+            case.alive:
+                return UIColor(red: 199, green: 255, blue: 185)
+            case.dead:
+                return UIColor(red: 255, green: 232, blue: 224)
+            case.unknow:
+                return UIColor(red: 238, green: 238, blue: 238)
+            }
+        }
+        
+        var textColor: UIColor{
+            switch self{
+            case.alive:
+                return UIColor(red: 49, green: 159, blue: 22)
+            case.dead:
+                return UIColor(red:233 , green: 56, blue: 0)
+            case.unknow:
+                return UIColor(red: 160, green: 160, blue: 160)
+            }
+        }
+    }
+
+    
 }

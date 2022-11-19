@@ -5,10 +5,10 @@
 //  Created by Андрей Цуркан on 18.11.2022.
 //
 
-import Foundation
 import UIKit
 
 extension UIColor {
+    
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255)
         assert(green >= 0 && green <= 255)

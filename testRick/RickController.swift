@@ -8,6 +8,7 @@
 import UIKit
 
 class RickController: UIViewController {
+    
     private let table = UITableView()
     private let networkDataFetcher = NetworkDataFetcher()
     private var networkService = NetworkService()
@@ -21,11 +22,11 @@ class RickController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         table.separatorColor = .white
         
-        settapTableView()
+        setupTableView()
         loadData()
     }
     
-    func settapTableView() {
+    func setupTableView() {
         view.addSubview(table)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.dataSource = self
