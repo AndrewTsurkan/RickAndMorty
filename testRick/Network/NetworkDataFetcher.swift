@@ -18,7 +18,7 @@ class NetworkDataFetcher {
                     let response = try JSONDecoder().decode(Response.self, from: data)
                     closure(response.results)
                 } catch let jsonError {
-                    print("Failied to Docode", jsonError)
+                    print("Failied to Decode", jsonError)
                     closure(nil)
                 }
             case.failure(let error):

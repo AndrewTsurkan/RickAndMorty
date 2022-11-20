@@ -14,6 +14,7 @@ class RickController: UIViewController {
     private var networkService = NetworkService()
     private var ricks: [ResponseResult] = []
     private var counter: Int = 1
+    private var timer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +65,6 @@ extension RickController: UITableViewDelegate, UITableViewDataSource {
         cell.responseResult = rick
         return cell
     }
-    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == ricks.count - 1 {
             counter += 1
@@ -80,12 +80,11 @@ extension RickController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true) // переделать 
+        tableView.deselectRow(at: indexPath, animated: true) // TODO: Action
+            
+        
     }
-    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 160
-//    }
+
 }
 
 

@@ -6,32 +6,32 @@
 //
 
 import Foundation
+
+class NetworkService {
     
-    class NetworkService {
-        
-        enum APIError: Error {
-            case unknown
-            case invalidURL
-            case invalidData
+    enum APIError: Error {
+        case unknown
+        case invalidURL
+        case invalidData
+    }
+    
+    func request(urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(APIError.invalidURL))
+            return
         }
         
-        func request(urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
-            guard let url = URL(string: urlString) else {
-                completion(.failure(APIError.invalidURL))
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard error == nil else {
+                completion(.failure(APIError.unknown))
                 return
             }
-            
-            let task = URLSession.shared.dataTask(with: url) { data, _, error in
-                guard error == nil else {
-                    completion(.failure(APIError.unknown))
-                    return
-                }
-                guard let data = data else {
-                    completion(.failure(APIError.invalidData))
-                    return
-                }
-                completion(.success(data))
+            guard let data = data else {
+                completion(.failure(APIError.invalidData))
+                return
             }
-            task.resume()
+            completion(.success(data))
         }
+        task.resume()
     }
+}

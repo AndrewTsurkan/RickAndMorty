@@ -13,6 +13,7 @@ class RickInfoCell: UITableViewCell {
     private let stackViewAllInfoСharacter = UIStackView()
     private let stackViewImageViewVectorAndLabelPlanets = UIStackView()
     private let viewLabelNameAndViewStatus = UIView()
+    private let stackViewLabelNameAndViewStatus = UIStackView()
     private let posterImageView = UIImageView()
     private let viewStatus = UIView()
     private let labelStatus = UILabel()
@@ -21,6 +22,7 @@ class RickInfoCell: UITableViewCell {
     private let buttonWatchEpisodes = UIButton()
     private var imageViewVector = UIImageView()
     private let labelPlanets = UILabel()
+    
 
     var responseResult: ResponseResult?{
         didSet{
@@ -32,6 +34,7 @@ class RickInfoCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupPosterImageView()
         setupStackViewAllInfoHero()
+        setupStackViewLabelNammeAndViewStatus()
         setupViewLabelNameAndViewStatus()
         setupLabelStatusAndViewStatus()
         setupLabelName()
@@ -60,6 +63,19 @@ class RickInfoCell: UITableViewCell {
          stackViewAllInfoСharacter.heightAnchor.constraint(equalToConstant: 120)].forEach { $0.isActive = true }
     }
     
+    func setupStackViewLabelNammeAndViewStatus() {
+        stackViewAllInfoСharacter.addArrangedSubview(stackViewLabelNameAndViewStatus)
+        stackViewLabelNameAndViewStatus.axis = .horizontal
+        stackViewLabelNameAndViewStatus.distribution = .fill
+        stackViewLabelNameAndViewStatus.translatesAutoresizingMaskIntoConstraints = false
+        
+        [stackViewLabelNameAndViewStatus.topAnchor.constraint(equalTo: stackViewAllInfoСharacter.topAnchor),
+         stackViewLabelNameAndViewStatus.leftAnchor.constraint(equalTo: stackViewAllInfoСharacter.leftAnchor),
+         stackViewLabelNameAndViewStatus.rightAnchor.constraint(equalTo: stackViewAllInfoСharacter.rightAnchor),
+         stackViewLabelNameAndViewStatus.widthAnchor.constraint(equalToConstant: 25)].forEach {$0.isActive = true}
+        
+    }
+    
     func setupStackViewImageViewVectorAndLabelPlanets() {
         stackViewAllInfoСharacter.addArrangedSubview(stackViewImageViewVectorAndLabelPlanets)
         stackViewImageViewVectorAndLabelPlanets.axis = .horizontal
@@ -83,7 +99,7 @@ class RickInfoCell: UITableViewCell {
     }
     
     func setupViewLabelNameAndViewStatus() {
-        stackViewAllInfoСharacter.addArrangedSubview(viewLabelNameAndViewStatus)
+        stackViewLabelNameAndViewStatus.addArrangedSubview(viewLabelNameAndViewStatus)
     }
     
     func setupLabelName() {
@@ -91,10 +107,14 @@ class RickInfoCell: UITableViewCell {
         labelName.font = UIFont.systemFont(ofSize: 21)
         labelName.translatesAutoresizingMaskIntoConstraints = false
         
+        let constraintlabelName:[NSLayoutConstraint] =
         [labelName.leftAnchor.constraint(equalTo: viewLabelNameAndViewStatus.leftAnchor),
          labelName.rightAnchor.constraint(equalTo: viewStatus.leftAnchor),
          labelName.topAnchor.constraint(equalTo: viewLabelNameAndViewStatus.topAnchor),
-         labelName.bottomAnchor.constraint(equalTo: viewLabelNameAndViewStatus.bottomAnchor)].forEach{ $0.isActive = true }
+         labelName.bottomAnchor.constraint(equalTo: viewLabelNameAndViewStatus.bottomAnchor)]
+        
+        constraintlabelName.forEach {$0.isActive = true}
+        constraintlabelName.forEach{$0.priority = UILayoutPriority(rawValue: 400)}// TODO: Я не понимаю что не так почему он не обрезается
     }
     
     func setupLabelStatusAndViewStatus() {
@@ -106,16 +126,24 @@ class RickInfoCell: UITableViewCell {
         labelStatus.translatesAutoresizingMaskIntoConstraints = false
         labelStatus.font = UIFont.systemFont(ofSize: 14)
         
+        let constrainViewStatus: [NSLayoutConstraint] =
         [viewStatus.heightAnchor.constraint(equalToConstant: 25),
          viewStatus.rightAnchor.constraint(equalTo: viewLabelNameAndViewStatus.rightAnchor),
+         viewStatus.leftAnchor.constraint(equalTo: viewLabelNameAndViewStatus.rightAnchor, constant: 40),
          viewStatus.topAnchor.constraint(equalTo: viewLabelNameAndViewStatus.topAnchor),
-         viewStatus.bottomAnchor.constraint(equalTo: viewLabelNameAndViewStatus.bottomAnchor)].forEach { $0.isActive = true }
+         viewStatus.bottomAnchor.constraint(equalTo: viewLabelNameAndViewStatus.bottomAnchor)]
         
+        constrainViewStatus.forEach {$0.isActive = true}
+        constrainViewStatus.forEach{$0.priority = UILayoutPriority(rawValue: 500)}
         
+        let constraintlabelStatus:[NSLayoutConstraint] =
         [labelStatus.topAnchor.constraint(equalTo: viewStatus.topAnchor, constant: 3),
          labelStatus.leftAnchor.constraint(equalTo: viewStatus.leftAnchor, constant: 10),
          labelStatus.rightAnchor.constraint(equalTo: viewStatus.rightAnchor, constant: -10),
-         labelStatus.bottomAnchor.constraint(equalTo: viewStatus.bottomAnchor, constant: -3)].forEach { $0.isActive = true }
+         labelStatus.bottomAnchor.constraint(equalTo: viewStatus.bottomAnchor, constant: -3)]
+        
+        constraintlabelStatus.forEach { $0.isActive = true }
+        constraintlabelStatus.forEach{$0.priority = UILayoutPriority(rawValue: 500)}
     }
     
     func setupLabelGenderAndRace() {
