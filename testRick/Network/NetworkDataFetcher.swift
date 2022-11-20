@@ -10,20 +10,18 @@ import Foundation
 class NetworkDataFetcher {
     private let networkService = NetworkService()
     
-    func fetchJson(urlString: String, closure: @escaping ([ResponseResult]?) ->Void) {
+    func fetchJson(urlString: String, closure: @escaping (Result<[ResponseResult], Error>) ->Void) {
         networkService.request(urlString: urlString) { result in
             switch result {
             case.success(let data):
                 do {
                     let response = try JSONDecoder().decode(Response.self, from: data)
-                    closure(response.results)
-                } catch let jsonError {
-                    print("Failied to Decode", jsonError)
-                    closure(nil)
+                    closure(.success(response.results ?? []))
+                } catch let error {
+                    closure(.failure(error))
                 }
             case.failure(let error):
-                print("SYSTEM ERROR\(error.localizedDescription)")
-                closure(nil)
+                closure(.failure(error))
             }
         }
     }

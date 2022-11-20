@@ -41,11 +41,16 @@ class RickController: UIViewController {
     }
     private func loadData(){
         let urlString: String = "https://rickandmortyapi.com/api/character"
-        networkDataFetcher.fetchJson(urlString: urlString) { [weak self] info in
-            guard let info = info else { return }
-            self?.ricks = info
-            DispatchQueue.main.async {
-                self?.table.reloadData()
+        networkDataFetcher.fetchJson(urlString: urlString) { [weak self] result in
+            switch result {
+            case let .success(info):
+                self?.ricks = info
+                DispatchQueue.main.async {
+                    self?.table.reloadData()
+                }
+            case .failure:
+                // TODO: Error handling
+                break
             }
         }
     }
@@ -65,26 +70,30 @@ extension RickController: UITableViewDelegate, UITableViewDataSource {
         cell.responseResult = rick
         return cell
     }
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == ricks.count - 1 {
             counter += 1
             let urlString = "https://rickandmortyapi.com/api/character?page=\(String(counter))"
-            networkDataFetcher.fetchJson(urlString: urlString) { [weak self] info in
-                guard let info = info else { return }
-                self?.ricks.append(contentsOf: info)
-                DispatchQueue.main.async {
-                    self?.table.reloadData()
+            networkDataFetcher.fetchJson(urlString: urlString) { [weak self] result in
+                switch result {
+                case let .success(info):
+                    self?.ricks.append(contentsOf: info)
+                    DispatchQueue.main.async {
+                        self?.table.reloadData()
+                    }
+                case .failure:
+                    // TODO: Error handling
+                    break
                 }
             }
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true) // TODO: Action
-            
-        
+        // TODO: Action
+        tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
 
 
