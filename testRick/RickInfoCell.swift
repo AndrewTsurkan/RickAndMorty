@@ -7,7 +7,10 @@ import UIKit
 
 class RickInfoCell: UITableViewCell {
     
-    static var reusedId = "InstallCell"
+    static var reusedId: String {
+        return String(describing: self)
+    }
+    
     private var networkDataFetcher = NetworkDataFetcher()
     
     private let mainStackView = UIStackView()
@@ -38,6 +41,14 @@ class RickInfoCell: UITableViewCell {
         setupGenderAndRace()
         setupButtonWatchEpisodes()
         setupLabelPlanets()
+    }
+    
+    override func prepareForReuse() {
+        posterImageView.image = nil
+        statusLabel.text = nil
+        nameLabel.text = nil
+        genderAndRaceLabel.text = nil
+        planetNameLabel.text = nil
     }
     
     required init?(coder: NSCoder) {

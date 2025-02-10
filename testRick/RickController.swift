@@ -80,8 +80,8 @@ extension RickController: UITableViewDelegate, UITableViewDataSource {
                 case let .success(info):
                     self?.ricks.append(contentsOf: info)
                     DispatchQueue.main.async {
-                        self?.table.reloadData()
-                    }
+                            self?.table.reloadData()
+                        }
                 case .failure:
                     // TODO: Error handling
                     break
